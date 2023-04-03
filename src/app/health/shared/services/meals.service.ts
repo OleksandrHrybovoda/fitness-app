@@ -2,8 +2,11 @@ import { Injectable } from '@angular/core';
 import {
   CollectionReference,
   Firestore,
+  addDoc,
   collection,
   collectionData,
+  deleteDoc,
+  doc,
   query,
 } from '@angular/fire/firestore';
 import { Store } from '@ngrx/store';
@@ -39,5 +42,19 @@ export class MealsService {
       tap((meals) => this.store.dispatch(MealsActions.getMeals({ meals }))),
       shareReplay(1)
     );
+  }
+
+  async addMeal(meal: Meal): Promise<string | void> {
+    const discountRef = collection(this.firestore, 'meals');
+    const doc = addDoc(discountRef, { ...meal });
+
+    return doc.then((doc) => {
+      return doc.id;
+    });
+  }
+
+  async removeMeal(id: string): Promise<void> {
+    const promoItemRef = doc(this.firestore, 'meals', id);
+    deleteDoc(promoItemRef);
   }
 }

@@ -24,6 +24,10 @@ export class MealsComponent {
     this.prepareToShowMeals();
   }
 
+  removeMeal(event: Meal) {
+    this.mealsService.removeMeal(event.id);
+  }
+
   ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.complete();
