@@ -1,3 +1,4 @@
+import { getUser } from './../../../store/actions';
 import { Injectable } from '@angular/core';
 import {
   Auth,
@@ -28,6 +29,10 @@ export class AuthService {
         }
       })
     );
+  }
+
+  get user(): User | null {
+    return this.auth.currentUser;
   }
 
   async login(email: string, password: string): Promise<UserCredential> {
