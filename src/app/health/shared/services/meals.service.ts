@@ -7,7 +7,7 @@ import {
   query,
 } from '@angular/fire/firestore';
 import { Store } from '@ngrx/store';
-import { Observable, tap } from 'rxjs';
+import { Observable, shareReplay, tap } from 'rxjs';
 import { AuthService } from 'src/app/auth/shared/services/auth/auth.service';
 import { Meal } from 'src/app/core/models/meal.model';
 import { AppStateInterface } from 'src/app/types/appState.interface';
@@ -36,7 +36,8 @@ export class MealsService {
         idField: 'id',
       }
     ).pipe(
-      tap((meals) => this.store.dispatch(MealsActions.getMeals({ meals })))
+      tap((meals) => this.store.dispatch(MealsActions.getMeals({ meals }))),
+      shareReplay(1)
     );
   }
 }
