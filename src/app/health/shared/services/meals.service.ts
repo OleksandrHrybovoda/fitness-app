@@ -8,27 +8,23 @@ import {
   deleteDoc,
   doc,
   query,
+  updateDoc,
 } from '@angular/fire/firestore';
-import { Store } from '@ngrx/store';
-import { Observable, shareReplay, tap } from 'rxjs';
-import { AuthService } from 'src/app/auth/shared/services/auth/auth.service';
+import { Store, select } from '@ngrx/store';
+import { Observable, filter, map, of, shareReplay, tap } from 'rxjs';
 import { Meal } from 'src/app/core/models/meal.model';
 import { AppStateInterface } from 'src/app/types/appState.interface';
 import * as MealsActions from '../../meals/store/actions';
+import { getMealsSelector } from '../../meals/store/selectors';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MealsService {
   constructor(
-    private authService: AuthService,
     private firestore: Firestore,
     private store: Store<AppStateInterface>
   ) {}
-
-  get uid(): string | undefined {
-    return this.authService.user?.uid;
-  }
 
   getMeals(): Observable<Meal[]> {
     return collectionData<Meal>(
@@ -44,6 +40,14 @@ export class MealsService {
     );
   }
 
+  getMeal(id: string): Observable<Meal | undefined> {
+    if (!id) return of();
+    return this.store.pipe(select(getMealsSelector)).pipe(
+      filter(Boolean),
+      map((meals) => meals.find((meal) => meal.id === id))
+    );
+  }
+
   async addMeal(meal: Meal): Promise<string | void> {
     const discountRef = collection(this.firestore, 'meals');
     const doc = addDoc(discountRef, { ...meal });
@@ -51,6 +55,11 @@ export class MealsService {
     return doc.then((doc) => {
       return doc.id;
     });
+  }
+
+  async updateMeal(id: string, meal: Meal): Promise<void> {
+    const restaurantRef = doc(this.firestore, 'meals', id);
+    updateDoc(restaurantRef, { ...meal });
   }
 
   async removeMeal(id: string): Promise<void> {
