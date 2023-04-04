@@ -4,7 +4,6 @@ import {
   EventEmitter,
   Input,
   OnChanges,
-  OnInit,
   Output,
   SimpleChanges,
 } from '@angular/core';
@@ -23,7 +22,7 @@ import { Meal } from 'src/app/core/models/meal.model';
   styleUrls: ['./meal-form.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MealFormComponent implements OnInit, OnChanges {
+export class MealFormComponent implements OnChanges {
   @Output()
   create = new EventEmitter<Meal>();
 
@@ -43,29 +42,24 @@ export class MealFormComponent implements OnInit, OnChanges {
 
   constructor(private fb: FormBuilder) {}
 
-  ngOnInit(): void {
-    this.initForm();
-  }
-
   ngOnChanges(changes: SimpleChanges) {
-    if (this.meal && this.meal.name) {
+    if (!this.form) {
+      this.initForm();
+    }
+    if (this.meal && this.meal.name && this.form) {
       this.exists = true;
       this.emptyIngredients();
 
       const value = this.meal;
-      this.form.patchValue(value);
+      this.form?.patchValue({
+        name: value.name,
+      });
 
       if (value.ingredients) {
         for (const item of value.ingredients) {
-          this.ingredients.push(new FormControl(item));
+          this.ingredients?.push(new FormControl(item));
         }
       }
-    }
-  }
-
-  emptyIngredients() {
-    while (this.ingredients.controls.length) {
-      this.ingredients.removeAt(0);
     }
   }
 
@@ -77,7 +71,13 @@ export class MealFormComponent implements OnInit, OnChanges {
   }
 
   get ingredients(): FormArray<FormControl<string | null>> {
-    return this.form.get('ingredients') as FormArray;
+    return this.form?.get('ingredients') as FormArray;
+  }
+
+  emptyIngredients() {
+    while (this.ingredients?.controls?.length) {
+      this.ingredients.removeAt(0);
+    }
   }
 
   addIngredient(): void {
