@@ -31,7 +31,7 @@ export class ListItemComponent {
     this.remove.emit(this.item);
   }
 
-  getRoute(item: any): any[] {
-    return [`../meals`, item.id];
+  getRoute(item: any) {
+    return [`../${item.ingredients ? 'meals' : 'workouts'}`, item.id];
   }
 }

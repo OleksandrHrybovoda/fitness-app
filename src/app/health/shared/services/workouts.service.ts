@@ -11,7 +11,7 @@ import {
   updateDoc,
 } from '@angular/fire/firestore';
 import { Store, select } from '@ngrx/store';
-import { Observable, filter, map, of, shareReplay, tap } from 'rxjs';
+import { Observable, map, shareReplay, tap } from 'rxjs';
 import { AppStateInterface } from 'src/app/types/appState.interface';
 import * as WorkoutsActions from '../../workouts/store/actions';
 import { Workout } from 'src/app/core/models/workout.model';
@@ -43,10 +43,9 @@ export class WorkoutsService {
   }
 
   getWorkout(id: string): Observable<Workout | undefined> {
-    if (!id) return of();
-    return this.store.pipe(select(getWorkoutsSelector)).pipe(
-      filter(Boolean),
-      map((workouts) => workouts.find((workout) => workout.id === id))
+    return this.store.pipe(
+      select(getWorkoutsSelector),
+      map((workouts) => workouts?.find((workout) => workout.id === id))
     );
   }
 

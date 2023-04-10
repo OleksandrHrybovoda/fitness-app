@@ -41,7 +41,7 @@ export class MealsService {
   }
 
   getMeal(id: string): Observable<Meal | undefined> {
-    if (!id) return of();
+    if (!id) return of(undefined);
     return this.store.pipe(select(getMealsSelector)).pipe(
       filter(Boolean),
       map((meals) => meals.find((meal) => meal.id === id))
