@@ -8,6 +8,6 @@ import { WorkoutPipe } from './pipes/workout.pipe';
 @NgModule({
   imports: [CommonModule, RouterModule],
   declarations: [ListItemComponent, WorkoutPipe, JoinPipe],
-  exports: [ListItemComponent],
+  exports: [ListItemComponent, WorkoutPipe, JoinPipe],
 })
 export class SharedModule {}

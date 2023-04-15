@@ -3,9 +3,11 @@ import { AppStateInterface } from './appState.interface';
 import * as fromUser from '../auth/store/reducers';
 import * as fromMeals from '../health/meals/store/reducers';
 import * as fromWorkouts from '../health/workouts/store/reducers';
+import * as fromSchedule from '../health/schedule/store/reducers';
 
 export const appReducer: ActionReducerMap<AppStateInterface> = {
   user: fromUser.reducers,
   meals: fromMeals.reducers,
   workouts: fromWorkouts.reducers,
+  scheduleState: fromSchedule.reducers,
 };
